@@ -288,9 +288,10 @@
       <div class="plan"><h3 data-i18n="p1"></h3><div class="for" data-i18n="p1f"></div><div class="price">$0</div>
         <ul><li data-i18n="p1a"></li><li data-i18n="p1b"></li><li data-i18n="p1c"></li><li data-i18n="p1d"></li></ul>
         <a href="#start" class="btn bg" data-i18n="dl"></a></div>
-      <div class="plan pop"><span class="pb" data-i18n="p2b"></span><h3 data-i18n="p2"></h3><div class="for" data-i18n="p2f"></div><div class="price">$9<small> /mo</small></div>
+      <div class="plan pop"><span class="pb" data-i18n="p2b"></span><h3 data-i18n="p2"></h3><div class="for" data-i18n="p2f"></div><div class="price">$9<small> /mo</small></div><div style="color:var(--g);font-size:.85rem;font-weight:600" data-i18n="p2trial"></div>
         <ul><li data-i18n="p2a"></li><li data-i18n="p2c"></li><li data-i18n="p2d"></li><li data-i18n="p2e"></li></ul>
-        <a href="#join" class="btn bp" data-i18n="join"></a></div>
+        <a id="waPro" href="#" target="_blank" rel="noopener" class="btn bp" data-i18n="buy_wa"></a>
+        <a id="mailPro" href="#" class="btn bg" style="margin-top:10px" data-i18n="buy_mail"></a></div>
       <div class="plan"><h3 data-i18n="p3"></h3><div class="for" data-i18n="p3f"></div><div class="price">$6<small> /member/mo</small></div>
         <ul><li data-i18n="p3a"></li><li data-i18n="p3b"></li><li data-i18n="p3c"></li><li data-i18n="p3d"></li></ul>
         <a href="#join" class="btn bg" data-i18n="join"></a></div>
@@ -366,17 +367,18 @@ en: {
   pv_eb:"Privacy", pv_h:"We never see your code. Ever.", pv_p:"BurnRate runs on your machine and sends nothing anywhere. Read the source to check.",
   pv_yes:"✓ What it reads", pv1:"Model names and token counts", pv2:"Timestamps and project folder names", pv3:"Names of tools used",
   pv_no:"✗ What it never reads or sends", pv4:"Your code or files", pv5:"Your prompts or Claude's answers", pv6:"Anything to any server",
-  pr_eb:"Pricing", pr_h:"Free today. Pro when it's ready.", pr_p:"The CLI stays free. Paid plans add automation and teams.",
+  pr_eb:"Pricing", pr_h:"Free forever. Pro when you want more.", pr_p:"The CLI stays free. Pro adds forecasting and measured savings. Message us and we'll set you up.",
   p1:"Free", p1f:"Everything you need to see and fix waste", p1a:"Spend & context report", p1b:"Live meter & status line", p1c:"Right-model & connector checks", p1d:"Open source",
-  p2b:"Coming soon", p2:"Pro", p2f:"For developers who want it automatic", p2a:"Auto-compact suggestions & rules", p2c:"Before/after savings tracking", p2d:"Weekly limit forecast", p2e:"Smart model routing",
+  p2b:"Available now", p2:"Pro", p2f:"Know before you hit the limit", p2trial:"14-day free trial", p2a:"Weekly limit forecast: when you'll hit it, and how to make it last", p2c:"Measured before/after savings", p2d:"Learns your limit automatically", p2e:"Smart model routing (coming)",
+  buy_wa:"💬 Get Pro on WhatsApp", buy_mail:"✉️ Or email us", wa_msg:"Hi, I'd like to get BurnRate Pro.", mail_subj:"BurnRate Pro",
   p3:"Team", p3f:"For engineering teams", p3a:"Shared dashboard", p3b:"Budgets per person & project", p3c:"Slack & email alerts", p3d:"Export for finance",
-  join:"Join the waitlist", pr_note:"Early waitlist members get Pro free during beta, then 50% off for life.",
+  join:"Join the waitlist", pr_note:"Pro: message us on WhatsApp or email, pay, and get your license key right away. Team plan: join the waitlist.",
   faq_h:"Questions, answered",
   q1:"I'm on a flat Claude subscription. Why would I care about cost?", a1:"Because your weekly limit is measured in usage. The same waste that would cost API users money makes subscribers hit their limit early. Leaner sessions make your limit last much longer.",
   q2:"Will starting fresh hurt Claude's quality?", a2:"Usually it helps. Huge contexts slow the model down and dilute its focus. /compact keeps a summary of what matters. Start fresh for unrelated tasks, compact inside long ones.",
   q3:"Does it work with Cursor or Copilot?", a3:"Not yet. Today it fully supports Claude Code, including sessions started from Claude Desktop. Tell us what you use when you join the waitlist. That decides what we build next.",
   q4:"Are the savings guaranteed?", a4:"No. The numbers are estimates based on your real usage. Measure your own before and after: run the report, change your habits for a week, and run it again.",
-  q5:"Is it really free?", a5:"Yes. The CLI is free and open source. Paid plans will add automation and team features on top. The free tool won't get worse.",
+  q5:"Is it really free?", a5:"Yes. The CLI is free and open source. Pro adds forecasting and measured savings on top, and Team is coming. The free tool won't get worse.",
   fin_a:"Your next weekly limit", fin_b:"can last a lot longer.", fin_p:"Get updates and early access to Pro and Team.",
   ph:"you@company.com", thanks:"🎉 You're on the list. Check your inbox soon.",
   foot:"Not affiliated with Anthropic, OpenAI, GitHub, Microsoft or Cursor."
@@ -415,11 +417,12 @@ ar: {
   pv_eb:"الخصوصية", pv_h:"لا نرى الكود الخاص بك. أبداً.", pv_p:"تعمل الأداة على جهازك ولا ترسل أي شيء لأي مكان. اقرأ الكود المصدري لتتأكد.",
   pv_yes:"✓ ما تقرؤه الأداة", pv1:"أسماء الموديلات وأعداد الاستهلاك", pv2:"التواريخ وأسماء مجلدات المشاريع", pv3:"أسماء الأدوات المستخدمة",
   pv_no:"✗ ما لا تقرؤه ولا ترسله أبداً", pv4:"الكود أو الملفات", pv5:"رسائلك أو إجابات كلود", pv6:"أي شيء لأي خادم",
-  pr_eb:"الأسعار", pr_h:"مجاني اليوم، والنسخة الاحترافية قريباً.", pr_p:"الأداة الأساسية ستبقى مجانية، والباقات المدفوعة تضيف الأتمتة ومميزات الفرق.",
+  pr_eb:"الأسعار", pr_h:"مجانية دائماً، والاحترافية لمن يريد المزيد.", pr_p:"الأداة الأساسية ستبقى مجانية، والنسخة الاحترافية تضيف التوقع وقياس التوفير. راسلنا وسنجهز لك كل شيء.",
   p1:"مجانية", p1f:"كل ما تحتاجه لاكتشاف الهدر وإصلاحه", p1a:"تقرير الاستهلاك والسياق", p1b:"العداد اللحظي وشريط الحالة", p1c:"فحص الموديل وأدوات الربط", p1d:"مفتوحة المصدر",
-  p2b:"قريباً", p2:"احترافية", p2f:"للمطورين الذين يريدونها تلقائية", p2a:"اقتراحات وقواعد ضغط تلقائية", p2c:"قياس التوفير قبل وبعد", p2d:"توقع موعد الوصول للحد الأسبوعي", p2e:"اختيار ذكي للموديل",
+  p2b:"متاحة الآن", p2:"احترافية", p2f:"اعرف قبل أن تصل إلى الحد", p2trial:"تجربة مجانية ١٤ يوماً", p2a:"توقع موعد الوصول للحد الأسبوعي، وكيف تجعله يكفي مدة أطول", p2c:"قياس فعلي للتوفير قبل وبعد", p2d:"تتعرف على حدك الأسبوعي تلقائياً", p2e:"اختيار ذكي للموديل (قريباً)",
+  buy_wa:"💬 اطلبها عبر واتساب", buy_mail:"✉️ أو راسلنا بالبريد", wa_msg:"مرحباً، أريد الاشتراك في النسخة الاحترافية من BurnRate", mail_subj:"BurnRate Pro",
   p3:"فريق", p3f:"لفرق البرمجة", p3a:"لوحة مشتركة", p3b:"ميزانيات لكل شخص ومشروع", p3c:"تنبيهات على البريد وتطبيقات المحادثة", p3d:"تصدير للإدارة المالية",
-  join:"انضم لقائمة الانتظار", pr_note:"أوائل المسجلين يحصلون على النسخة الاحترافية مجاناً خلال الفترة التجريبية، ثم خصم ٥٠٪ مدى الحياة.",
+  join:"انضم لقائمة الانتظار", pr_note:"النسخة الاحترافية: راسلنا عبر واتساب أو البريد، وبعد الدفع يصلك مفتاح الترخيص فوراً. باقة الفرق: سجّل في قائمة الانتظار.",
   faq_h:"أسئلة شائعة",
   q1:"أنا مشترك باشتراك ثابت في كلود، لماذا أهتم بالتكلفة؟", a1:"لأن حدك الأسبوعي يُحسب بالاستهلاك. نفس الهدر الذي يكلّف مستخدمي الدفع المباشر أموالاً، يجعل المشتركين يصلون إلى الحد مبكراً. والجلسات الأصغر تجعل حدك يكفي لمدة أطول بكثير.",
   q2:"هل البدء من جديد يقلل جودة إجابات كلود؟", a2:"غالباً يحسّنها، فالسياق الضخم يبطئ الموديل ويشتت تركيزه. أمر الضغط يحتفظ بملخص لما يهم. ابدأ من جديد للمهام غير المرتبطة، واضغط المحادثة داخل المهام الطويلة.",
@@ -439,6 +442,8 @@ function setLang(l){
   document.querySelectorAll("[data-i18n-html]").forEach(e=>{const k=e.dataset.i18nHtml;if(d[k]!==undefined)e.innerHTML=d[k];});
   document.querySelectorAll("[data-i18n-ph]").forEach(e=>{const k=e.dataset.i18nPh;if(d[k]!==undefined)e.placeholder=d[k];});
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.lang===l));
+  const wa=document.getElementById("waPro"); if(wa) wa.href="https://wa.me/201091580566?text="+encodeURIComponent(d.wa_msg);
+  const ml=document.getElementById("mailPro"); if(ml) ml.href="mailto:mohamadtony888@gmail.com?subject="+encodeURIComponent(d.mail_subj)+"&body="+encodeURIComponent(d.wa_msg);
   try{localStorage.setItem("lang",l);}catch(e){}
 }
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
