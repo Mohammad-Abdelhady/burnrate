@@ -554,17 +554,27 @@
 
 <script>
   // ---- Waitlist ----
-  // TODO: replace with a real form endpoint before publishing.
-  const FORM_ENDPOINT = "";
+  // Waitlist signups are sent to Formspree.
+  const FORM_ENDPOINT = "https://formspree.io/f/xjyyyllg";
   async function joinWaitlist(e, form) {
     e.preventDefault();
+    const btn = form.querySelector("button");
     const data = Object.fromEntries(new FormData(form));
-    if (FORM_ENDPOINT) {
-      try { await fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }); }
-      catch (err) { console.error(err); }
-    } else { console.log("Waitlist signup (no endpoint configured):", data); }
-    form.style.display = "none";
-    document.getElementById("thanks").style.display = "block";
+    btn.disabled = true; btn.textContent = "Sending…";
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new URLSearchParams({ ...data, page: location.href })
+      });
+      if (!res.ok) throw new Error("Request failed: " + res.status);
+      form.style.display = "none";
+      document.getElementById("thanks").style.display = "block";
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false; btn.textContent = "Start saving →";
+      alert("Something went wrong. Please try again.");
+    }
     return false;
   }
 
