@@ -1,483 +1,281 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BurnRate: Cut your AI coding bill in half</title>
-<meta name="description" content="BurnRate is built to cut your team's AI coding spend in half: the right model for every task, no padded answers, no context wasted on unused connectors. Your code never leaves your machine.">
+<title>BurnRate: Stop hitting your AI limits. Cut your AI coding bill.</title>
+<meta name="description" content="BurnRate shows where your AI coding tokens go and stops the waste. Free, local, open source. Your code never leaves your machine.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #07080c; --bg2: #0c0e14; --panel: rgba(255,255,255,.03); --panel-solid: #11141c;
-    --border: rgba(255,255,255,.08); --border2: rgba(255,255,255,.14);
-    --text: #f2f4f8; --muted: #8b93a7; --dim: #5b6377;
-    --orange: #ff6b35; --amber: #ffb547; --green: #22d39a; --red: #ff4d6d;
-    --grad: linear-gradient(135deg, #ff6b35 0%, #ffb547 100%);
-    --grad-green: linear-gradient(135deg, #22d39a 0%, #7cf5c8 100%);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { font-family: "Inter", -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
-  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
-  a { color: inherit; text-decoration: none; }
+  :root{--bg:#07080c;--panel:rgba(255,255,255,.03);--solid:#11141c;--b:rgba(255,255,255,.08);--b2:rgba(255,255,255,.14);--t:#f2f4f8;--m:#8b93a7;--d:#5b6377;--o:#ff6b35;--a:#ffb547;--g:#22d39a;--r:#ff4d6d;--grad:linear-gradient(135deg,#ff6b35,#ffb547);--gg:linear-gradient(135deg,#22d39a,#7cf5c8)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  html[dir=rtl] body{font-family:"Cairo","Inter",system-ui,sans-serif;line-height:1.8}
+  .mono,code,.term{font-family:"JetBrains Mono",ui-monospace,monospace;direction:ltr;unicode-bidi:isolate}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 26px}
+  a{color:inherit;text-decoration:none}
+  .gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .gg{background:var(--gg);-webkit-background-clip:text;background-clip:text;color:transparent}
 
-  /* background glow */
-  .glow { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-  .glow::before { content: ""; position: absolute; top: -280px; left: 50%; transform: translateX(-50%); width: 1100px; height: 700px; background: radial-gradient(ellipse at center, rgba(255,107,53,.22), transparent 62%); }
-  .glow::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 900px; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse at 50% 0%, black 20%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 20%, transparent 70%); opacity: .5; }
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(7,8,12,.75);border-bottom:1px solid var(--b)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.12rem;direction:ltr}
+  .lm{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;box-shadow:0 0 24px rgba(255,107,53,.45)}
+  .links{display:flex;gap:26px;font-size:.92rem;color:var(--m)}
+  .links a:hover{color:var(--t)}
+  .right{display:flex;gap:10px;align-items:center}
+  .lang{display:flex;border:1px solid var(--b2);border-radius:9px;overflow:hidden}
+  .lang button{background:none;border:0;color:var(--m);padding:7px 11px;font:600 .82rem inherit;cursor:pointer;font-family:inherit}
+  .lang button.on{background:rgba(255,255,255,.08);color:var(--t)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:.95rem;padding:11px 20px;border-radius:10px;transition:.2s;cursor:pointer;border:0;font-family:inherit}
+  .bp{background:var(--grad);color:#fff;box-shadow:0 8px 30px rgba(255,107,53,.35)}
+  .bp:hover{transform:translateY(-1px);box-shadow:0 12px 40px rgba(255,107,53,.5)}
+  .bg{border:1px solid var(--b2);color:var(--t);background:var(--panel)}
 
-  /* nav */
-  nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px); background: rgba(7,8,12,.7); border-bottom: 1px solid var(--border); }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 66px; }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; }
-  .logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--grad); display: grid; place-items: center; box-shadow: 0 0 24px rgba(255,107,53,.45); }
-  .logo-mark svg { width: 17px; height: 17px; }
-  .nav-links { display: flex; gap: 30px; font-size: .92rem; color: var(--muted); }
-  .nav-links a:hover { color: var(--text); }
-  .btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .95rem; padding: 11px 20px; border-radius: 10px; transition: all .2s; cursor: pointer; border: 0; font-family: inherit; }
-  .btn-primary { background: var(--grad); color: #fff; box-shadow: 0 8px 30px rgba(255,107,53,.35), inset 0 1px 0 rgba(255,255,255,.25); }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 40px rgba(255,107,53,.5), inset 0 1px 0 rgba(255,255,255,.25); }
-  .btn-ghost { border: 1px solid var(--border2); color: var(--text); background: var(--panel); }
-  .btn-ghost:hover { border-color: rgba(255,255,255,.3); }
+  .hero{position:relative;padding:90px 0 30px;text-align:center}
+  .hero::before{content:"";position:absolute;top:-260px;left:50%;transform:translateX(-50%);width:1100px;height:700px;background:radial-gradient(ellipse,rgba(255,107,53,.22),transparent 62%);pointer-events:none}
+  .hero>.wrap{position:relative}
+  .badge{display:inline-flex;gap:10px;align-items:center;font-size:.84rem;color:var(--m);border:1px solid var(--b2);background:var(--panel);padding:6px 14px 6px 6px;border-radius:999px;margin-bottom:26px}
+  html[dir=rtl] .badge{padding:6px 6px 6px 14px}
+  .badge b{background:rgba(34,211,154,.12);color:var(--g);border-radius:999px;padding:2px 10px}
+  h1{font-size:clamp(2.5rem,6.4vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-.04em;margin-bottom:22px}
+  html[dir=rtl] h1{letter-spacing:0;line-height:1.25}
+  .sub{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--m);max-width:700px;margin:0 auto 34px}
+  .sub b{color:var(--t)}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .meta{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:.86rem;color:var(--m)}
+  .meta span::before{content:"✓ ";color:var(--g);font-weight:800}
 
-  /* hero */
-  .hero { position: relative; padding: 96px 0 40px; text-align: center; }
-  .hero > .wrap { position: relative; z-index: 1; }
-  .badge { display: inline-flex; align-items: center; gap: 10px; font-size: .82rem; color: var(--muted); border: 1px solid var(--border2); background: var(--panel); padding: 6px 14px 6px 6px; border-radius: 999px; margin-bottom: 30px; }
-  .badge b { background: rgba(34,211,154,.12); color: var(--green); border-radius: 999px; padding: 3px 10px; font-weight: 600; }
-  h1 { font-size: clamp(2.8rem, 7vw, 5.4rem); font-weight: 900; line-height: 1.02; letter-spacing: -.045em; margin-bottom: 26px; }
-  h1 .strike { position: relative; color: var(--dim); }
-  h1 .strike::after { content: ""; position: absolute; left: -4%; right: -4%; top: 52%; height: 6px; background: var(--red); border-radius: 4px; transform: rotate(-4deg); opacity: .9; }
-  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .green-text { background: var(--grad-green); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .hero-sub { font-size: clamp(1.08rem, 2vw, 1.3rem); color: var(--muted); max-width: 680px; margin: 0 auto 38px; }
-  .hero-sub b { color: var(--text); font-weight: 600; }
+  .meter{max-width:900px;margin:56px auto 0;background:#050609;border:1px solid var(--b2);border-radius:14px;padding:18px 20px;text-align:left;font-size:.82rem;line-height:2;box-shadow:0 30px 80px rgba(0,0,0,.5);overflow-x:auto;white-space:nowrap}
+  .meter .h{color:var(--d)} .meter .g{color:var(--g)} .meter .y{color:var(--a)} .meter .r{color:var(--r);font-weight:700}
+  .cap{color:var(--d);font-size:.8rem;margin-top:12px}
 
-  .signup { display: flex; gap: 10px; max-width: 520px; margin: 0 auto; padding: 6px; background: var(--panel-solid); border: 1px solid var(--border2); border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
-  .signup input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); font-size: 1rem; padding: 0 14px; font-family: inherit; }
-  .signup input::placeholder { color: var(--dim); }
-  .hero-meta { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; margin-top: 18px; font-size: .86rem; color: var(--muted); }
-  .hero-meta span::before { content: "✓"; color: var(--green); margin-right: 7px; font-weight: 700; }
-  .thanks { display: none; margin-top: 16px; color: var(--green); font-weight: 600; }
+  section{padding:100px 0}
+  .eb{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--o);margin-bottom:12px}
+  html[dir=rtl] .eb{letter-spacing:0}
+  h2{font-size:clamp(1.9rem,4.2vw,3rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:16px}
+  html[dir=rtl] h2{letter-spacing:0;line-height:1.35}
+  .sh{text-align:center;max-width:740px;margin:0 auto 54px}
+  .sh p{color:var(--m);font-size:1.1rem}
 
-  /* before/after visual */
-  .ba { position: relative; z-index: 1; margin: 70px auto 0; max-width: 980px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; }
-  .ba-card { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)); border: 1px solid var(--border2); border-radius: 18px; padding: 26px; text-align: left; position: relative; overflow: hidden; }
-  .ba-card.after { border-color: rgba(34,211,154,.35); box-shadow: 0 0 0 1px rgba(34,211,154,.08), 0 30px 80px rgba(34,211,154,.12); }
-  .ba-label { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
-  .ba-card.after .ba-label { color: var(--green); }
-  .ba-amount { font-size: 3rem; font-weight: 800; letter-spacing: -.03em; margin: 8px 0 18px; }
-  .ba-card.before .ba-amount { color: #c9ced9; }
-  .ba-amount small { font-size: 1rem; color: var(--muted); font-weight: 500; }
-  .ba-row { display: grid; grid-template-columns: 110px 1fr 54px; gap: 10px; align-items: center; font-size: .84rem; color: var(--muted); margin: 9px 0; }
-  .ba-row .track { height: 8px; border-radius: 6px; background: rgba(255,255,255,.06); overflow: hidden; }
-  .ba-row .fill { height: 100%; border-radius: 6px; }
-  .before .fill { background: linear-gradient(90deg, #ff4d6d, #ff8a5c); }
-  .after .fill { background: var(--grad-green); }
-  .ba-row .v { text-align: right; color: var(--text); font-weight: 600; }
-  .ba-arrow { display: grid; place-items: center; }
-  .ba-arrow div { width: 64px; height: 64px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; box-shadow: 0 0 40px rgba(255,107,53,.5); font-weight: 800; font-size: .95rem; }
-  .ba-save { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: rgba(34,211,154,.08); border: 1px solid rgba(34,211,154,.25); color: var(--green); font-weight: 600; font-size: .9rem; }
-  .ba-warn { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: rgba(255,77,109,.07); border: 1px solid rgba(255,77,109,.22); color: #ff8a9e; font-weight: 500; font-size: .88rem; }
-  .ba-note { text-align: center; color: var(--dim); font-size: .78rem; margin-top: 16px; position: relative; z-index: 1; }
-
-  /* tools strip */
-  .strip { padding: 60px 0 20px; text-align: center; }
-  .strip p { color: var(--dim); font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; margin-bottom: 20px; }
-  .strip-items { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px 40px; color: var(--muted); font-weight: 600; font-size: 1.05rem; }
-  .strip-items span { opacity: .65; }
-
-  /* sections */
-  section { padding: 110px 0; position: relative; }
-  .eyebrow { display: inline-block; font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
-  h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.1; margin-bottom: 18px; }
-  .section-head { text-align: center; max-width: 720px; margin: 0 auto 60px; }
-  .section-head p { color: var(--muted); font-size: 1.12rem; }
-
-  /* where savings come from */
-  .levers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .lever { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; transition: all .25s; position: relative; overflow: hidden; }
-  .lever:hover { border-color: var(--border2); transform: translateY(-3px); background: rgba(255,255,255,.045); }
-  .lever-num { font-size: 2.6rem; font-weight: 900; letter-spacing: -.04em; line-height: 1; margin-bottom: 4px; }
-  .lever-unit { font-size: .78rem; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-bottom: 18px; }
-  .lever h3 { font-size: 1.1rem; margin-bottom: 8px; letter-spacing: -.01em; }
-  .lever p { color: var(--muted); font-size: .93rem; }
-  .lever .ico { position: absolute; top: 22px; right: 22px; width: 38px; height: 38px; border-radius: 10px; background: rgba(255,107,53,.1); border: 1px solid rgba(255,107,53,.2); display: grid; place-items: center; font-size: 1.1rem; }
-  .levers-total { margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: linear-gradient(90deg, rgba(34,211,154,.08), rgba(34,211,154,.02)); border: 1px solid rgba(34,211,154,.25); border-radius: 18px; padding: 24px 30px; }
-  .levers-total .t { font-size: 1.15rem; font-weight: 600; }
-  .levers-total .n { font-size: 2.4rem; font-weight: 900; letter-spacing: -.03em; }
-  .fine { color: var(--dim); font-size: .8rem; margin-top: 14px; text-align: center; }
-
-  /* calculator */
-  .calc { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0; background: var(--panel-solid); border: 1px solid var(--border2); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,.5); }
-  .calc-left { padding: 44px; border-right: 1px solid var(--border); }
-  .calc-right { padding: 44px; background: radial-gradient(ellipse at top right, rgba(34,211,154,.12), transparent 60%); display: flex; flex-direction: column; justify-content: center; }
-  .field { margin-bottom: 30px; }
-  .field-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-  .field label { font-weight: 600; font-size: .98rem; }
-  .field output { font-family: "JetBrains Mono", monospace; font-weight: 700; color: var(--amber); font-size: 1.1rem; }
-  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 6px; background: rgba(255,255,255,.08); outline: none; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--grad); cursor: pointer; box-shadow: 0 0 0 4px rgba(255,107,53,.2); }
-  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border: 0; border-radius: 50%; background: var(--orange); cursor: pointer; }
-  .calc-big-label { color: var(--muted); font-size: .9rem; font-weight: 500; }
-  .calc-big { font-size: clamp(3rem, 6vw, 4.4rem); font-weight: 900; letter-spacing: -.04em; line-height: 1.05; margin: 6px 0 4px; }
-  .calc-sub { color: var(--muted); margin-bottom: 26px; }
-  .calc-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 26px; }
-  .calc-split div { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-  .calc-split small { color: var(--dim); font-size: .78rem; display: block; }
-  .calc-split b { font-size: 1.35rem; letter-spacing: -.02em; }
-  .calc-roi { font-size: .9rem; color: var(--muted); margin-bottom: 22px; }
-  .calc-roi b { color: var(--green); }
-
-  /* how it works */
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: s; }
-  .step { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 30px; position: relative; }
-  .step-n { font-family: "JetBrains Mono", monospace; font-size: .8rem; color: var(--orange); font-weight: 700; margin-bottom: 16px; }
-  .step h3 { font-size: 1.2rem; margin-bottom: 10px; letter-spacing: -.01em; }
-  .step p { color: var(--muted); font-size: .95rem; margin-bottom: 18px; }
-  .term { background: #050609; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: "JetBrains Mono", monospace; font-size: .78rem; color: #b9c0cf; line-height: 1.7; }
-  .term .p { color: var(--orange); }
-  .term .g { color: var(--green); }
-  .term .d { color: var(--dim); }
+  /* case study */
+  .case{background:linear-gradient(180deg,rgba(255,107,53,.07),rgba(255,255,255,.015));border:1px solid rgba(255,107,53,.3);border-radius:24px;padding:44px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}
+  .kpi{background:rgba(0,0,0,.25);border:1px solid var(--b);border-radius:14px;padding:18px}
+  .kpi b{display:block;font-size:2rem;font-weight:900;letter-spacing:-.03em;direction:ltr;unicode-bidi:isolate}
+  .kpi span{color:var(--m);font-size:.88rem}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .box{background:rgba(0,0,0,.25);border:1px solid var(--b);border-radius:14px;padding:22px}
+  .box h3{font-size:1.05rem;margin-bottom:14px}
+  .row{display:grid;grid-template-columns:150px 1fr 70px;gap:10px;align-items:center;font-size:.88rem;margin:9px 0;color:var(--m)}
+  .row .tr{height:8px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+  .row .f{height:100%;background:var(--grad);border-radius:6px}
+  html[dir=rtl] .row .f{margin-inline-start:auto}
+  .row .v{text-align:end;color:var(--t);font-weight:700;direction:ltr;unicode-bidi:isolate}
+  .scen{width:100%;border-collapse:collapse;font-size:.9rem}
+  .scen td{padding:8px 4px;border-bottom:1px solid var(--b)}
+  .scen td:last-child{text-align:end;font-weight:700;direction:ltr}
+  .scen tr.best td{color:var(--g)}
+  .note{color:var(--d);font-size:.82rem;margin-top:18px}
+  .quote{margin-top:22px;padding:18px 20px;border-inline-start:3px solid var(--o);background:rgba(255,107,53,.06);border-radius:8px;color:#c9ced9}
 
   /* features */
-  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .feature { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 26px; transition: border-color .2s; }
-  .feature:hover { border-color: var(--border2); }
-  .feature .fi { width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center; font-size: 1.2rem; background: rgba(255,255,255,.04); border: 1px solid var(--border2); margin-bottom: 18px; }
-  .feature h3 { font-size: 1.05rem; margin-bottom: 8px; letter-spacing: -.01em; }
-  .feature p { color: var(--muted); font-size: .92rem; }
-  .tag { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; background: rgba(34,211,154,.1); color: var(--green); }
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--panel);border:1px solid var(--b);border-radius:16px;padding:26px;transition:border-color .2s}
+  .card:hover{border-color:var(--b2)}
+  .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:1.2rem;background:rgba(255,255,255,.04);border:1px solid var(--b2);margin-bottom:16px}
+  .card h3{font-size:1.06rem;margin-bottom:8px}
+  .card p{color:var(--m);font-size:.93rem}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;margin-inline-start:8px;vertical-align:middle}
+  .now{background:rgba(34,211,154,.12);color:var(--g)}
+  .soon{background:rgba(255,181,71,.12);color:var(--a)}
 
-  /* guarantee */
-  .guarantee { background: linear-gradient(135deg, rgba(255,107,53,.12), rgba(255,181,71,.04)); border: 1px solid rgba(255,107,53,.3); border-radius: 26px; padding: 60px; display: grid; grid-template-columns: auto 1fr; gap: 44px; align-items: center; }
-  .seal { width: 150px; height: 150px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; text-align: center; box-shadow: 0 0 60px rgba(255,107,53,.45); position: relative; }
-  .seal::before { content: ""; position: absolute; inset: 8px; border-radius: 50%; border: 2px dashed rgba(255,255,255,.45); }
-  .seal b { font-size: 1.05rem; line-height: 1.2; font-weight: 900; letter-spacing: -.01em; }
-  .guarantee h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin-bottom: 14px; }
-  .guarantee p { color: #c3c9d6; font-size: 1.08rem; }
+  /* support table */
+  .sup{max-width:760px;margin:0 auto;width:100%;border-collapse:collapse;font-size:.95rem}
+  .sup td{padding:13px 10px;border-bottom:1px solid var(--b)}
+  .sup td:first-child{direction:ltr;unicode-bidi:isolate;font-weight:600}
+  html[dir=rtl] .sup td:first-child{text-align:right}
+
+  /* steps */
+  .term{background:#050609;border:1px solid var(--b);border-radius:10px;padding:14px;font-size:.8rem;color:#b9c0cf;line-height:1.8;text-align:left;margin-top:14px}
+  .term .p{color:var(--o)} .term .g{color:var(--g)}
 
   /* privacy */
-  .privacy { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-  .privacy h2 { text-align: left; }
-  .privacy > div > p { color: var(--muted); font-size: 1.08rem; margin-bottom: 26px; }
-  .pv-list { display: grid; gap: 10px; }
-  .pv-item { display: flex; gap: 14px; align-items: flex-start; }
-  .pv-item i { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; background: rgba(34,211,154,.12); color: var(--green); display: grid; place-items: center; font-style: normal; font-size: .8rem; font-weight: 800; margin-top: 2px; }
-  .pv-item span { color: #c3c9d6; }
-  .packet { background: #050609; border: 1px solid var(--border2); border-radius: 16px; padding: 24px; font-family: "JetBrains Mono", monospace; font-size: .85rem; line-height: 1.8; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
-  .packet .h { color: var(--dim); margin-bottom: 10px; display: flex; justify-content: space-between; }
-  .packet .k { color: #8ab4ff; } .packet .s { color: var(--amber); } .packet .n { color: var(--green); }
-  .packet .x { color: var(--red); text-decoration: line-through; opacity: .7; }
+  .priv{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:820px;margin:0 auto}
+  .priv ul{list-style:none;color:#c3c9d6}
+  .priv li{padding:6px 0}
 
   /* pricing */
-  .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: stretch; }
-  .plan { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 34px 30px; display: flex; flex-direction: column; position: relative; }
-  .plan.pop { background: linear-gradient(180deg, rgba(255,107,53,.09), rgba(255,255,255,.02)); border-color: rgba(255,107,53,.45); box-shadow: 0 30px 80px rgba(255,107,53,.12); }
-  .plan.pop::before { content: "Most popular"; position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--grad); color: #fff; font-size: .74rem; font-weight: 700; padding: 5px 14px; border-radius: 999px; letter-spacing: .02em; }
-  .plan h3 { font-size: 1.15rem; }
-  .plan .for { color: var(--muted); font-size: .9rem; margin-top: 4px; }
-  .plan .price { font-size: 3rem; font-weight: 900; letter-spacing: -.04em; margin: 22px 0 4px; }
-  .plan .price small { font-size: .95rem; color: var(--muted); font-weight: 500; letter-spacing: 0; }
-  .plan .roi { font-size: .84rem; color: var(--green); font-weight: 600; min-height: 22px; }
-  .plan ul { list-style: none; margin: 24px 0 30px; flex: 1; display: grid; gap: 11px; align-content: start; }
-  .plan li { display: flex; gap: 10px; font-size: .93rem; color: #c3c9d6; }
-  .plan li::before { content: "✓"; color: var(--green); font-weight: 800; }
-  .plan .btn { justify-content: center; }
+  .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .plan{background:var(--panel);border:1px solid var(--b);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;position:relative}
+  .plan.pop{background:linear-gradient(180deg,rgba(255,107,53,.09),rgba(255,255,255,.02));border-color:rgba(255,107,53,.45)}
+  .plan .pb{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;font-size:.74rem;font-weight:700;padding:4px 14px;border-radius:999px;white-space:nowrap}
+  .plan h3{font-size:1.15rem}
+  .plan .for{color:var(--m);font-size:.9rem}
+  .price{font-size:2.8rem;font-weight:900;letter-spacing:-.03em;margin:18px 0 2px;direction:ltr;unicode-bidi:isolate}
+  html[dir=rtl] .price{text-align:right}
+  .price small{font-size:.9rem;color:var(--m);font-weight:500}
+  .plan ul{list-style:none;margin:20px 0 28px;flex:1;display:grid;gap:10px;align-content:start}
+  .plan li{font-size:.93rem;color:#c3c9d6}
+  .plan li::before{content:"✓ ";color:var(--g);font-weight:800}
 
-  /* faq */
-  .faq { max-width: 800px; margin: 0 auto; display: grid; gap: 10px; }
-  details { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; transition: border-color .2s; }
-  details[open] { border-color: var(--border2); }
-  summary { cursor: pointer; font-weight: 600; font-size: 1.02rem; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; font-size: 1.4rem; color: var(--muted); font-weight: 400; transition: transform .2s; }
-  details[open] summary::after { transform: rotate(45deg); }
-  details p { color: var(--muted); margin-top: 12px; font-size: .96rem; }
+  /* signup */
+  .signup{display:flex;gap:10px;max-width:520px;margin:0 auto;padding:6px;background:var(--solid);border:1px solid var(--b2);border-radius:14px}
+  .signup input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--t);font-size:1rem;padding:0 14px;font-family:inherit}
+  .thanks{display:none;color:var(--g);font-weight:700;margin-top:14px}
 
-  /* final */
-  .final { text-align: center; overflow: hidden; }
-  .final-box { position: relative; background: var(--panel-solid); border: 1px solid var(--border2); border-radius: 28px; padding: 90px 40px; overflow: hidden; }
-  .final-box::before { content: ""; position: absolute; bottom: -300px; left: 50%; transform: translateX(-50%); width: 900px; height: 600px; background: radial-gradient(ellipse, rgba(255,107,53,.25), transparent 65%); }
-  .final-box > * { position: relative; }
-  .final h2 { font-size: clamp(2.2rem, 5vw, 3.8rem); margin-bottom: 18px; }
-  .final p { color: var(--muted); font-size: 1.15rem; margin-bottom: 34px; }
+  details{background:var(--panel);border:1px solid var(--b);border-radius:14px;padding:18px 22px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:600;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  details p{color:var(--m);margin-top:10px;font-size:.95rem}
+  .faq{max-width:800px;margin:0 auto}
 
-  footer { border-top: 1px solid var(--border); padding: 40px 0; margin-top: 60px; }
-  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; color: var(--dim); font-size: .85rem; }
+  .final{text-align:center}
+  .fbox{background:var(--solid);border:1px solid var(--b2);border-radius:26px;padding:80px 30px;position:relative;overflow:hidden}
+  .fbox::before{content:"";position:absolute;bottom:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(255,107,53,.25),transparent 65%)}
+  .fbox>*{position:relative}
+  footer{border-top:1px solid var(--b);padding:34px 0;margin-top:50px;color:var(--d);font-size:.84rem}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
-  /* reveal */
-  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-
-  @media (max-width: 960px) {
-    .levers { grid-template-columns: repeat(2, 1fr); }
-    .features { grid-template-columns: repeat(2, 1fr); }
-    .calc, .privacy { grid-template-columns: 1fr; }
-    .calc-left { border-right: 0; border-bottom: 1px solid var(--border); }
-    .nav-links { display: none; }
-  }
-  @media (max-width: 720px) {
-    .ba { grid-template-columns: 1fr; }
-    .ba-arrow div { transform: rotate(90deg); }
-    .levers, .features, .steps, .pricing { grid-template-columns: 1fr; }
-    .guarantee { grid-template-columns: 1fr; text-align: center; padding: 40px 26px; justify-items: center; }
-    .calc-left, .calc-right { padding: 30px 24px; }
-    .signup { flex-direction: column; }
-    .signup input { padding: 12px 14px; }
-    section { padding: 80px 0; }
-  }
+  @media(max-width:960px){.links{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.grid3,.pricing{grid-template-columns:1fr 1fr}.split,.priv{grid-template-columns:1fr}}
+  @media(max-width:640px){.grid3,.pricing,.kpis{grid-template-columns:1fr}.case{padding:26px}.signup{flex-direction:column}.signup input{padding:12px}section{padding:76px 0}.row{grid-template-columns:110px 1fr 60px}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="wrap">
-    <a href="#" class="logo">
-      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
-      BurnRate
-    </a>
-    <div class="nav-links">
-      <a href="#savings">How it saves</a>
-      <a href="#calculator">Calculator</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#pricing">Pricing</a>
+    <a href="#" class="logo"><span class="lm"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>BurnRate</a>
+    <div class="links">
+      <a href="#case" data-i18n="nav_case"></a>
+      <a href="#features" data-i18n="nav_features"></a>
+      <a href="#start" data-i18n="nav_start"></a>
+      <a href="#pricing" data-i18n="nav_pricing"></a>
     </div>
-    <a href="#join" class="btn btn-primary">Get early access</a>
+    <div class="right">
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="en">EN</button><button data-lang="ar">ع</button>
+      </div>
+      <a href="#start" class="btn bp" data-i18n="nav_cta"></a>
+    </div>
   </div>
 </nav>
 
-<!-- HERO -->
 <header class="hero">
-  <div class="glow"></div>
   <div class="wrap">
-    <div class="badge"><b>New</b> Built for Claude Code, Codex, Copilot, Cursor &amp; more</div>
-    <h1>Your AI coding bill.<br><span class="grad-text">Cut in half.</span></h1>
-    <p class="hero-sub">Most AI coding spend is waste: <b>expensive models on simple tasks</b>, <b>padded answers</b>, and <b>connectors you never use</b> eating context on every request. BurnRate finds that waste and cuts it, from the first day you install it.</p>
-
-    <form class="signup" id="join" onsubmit="return joinWaitlist(event, this)">
-      <input type="email" name="email" placeholder="Enter your work email" required aria-label="Work email">
-      <button class="btn btn-primary" type="submit">Start saving →</button>
-    </form>
-    <p class="thanks" id="thanks">🎉 You're on the list. We'll send your early-access invite soon.</p>
-    <div class="hero-meta">
-      <span>Free during beta</span>
-      <span>Your code never leaves your machine</span>
-      <span>Setup in under 5 minutes</span>
+    <div class="badge"><b data-i18n="badge_new"></b><span data-i18n="badge"></span></div>
+    <h1><span data-i18n="h1a"></span><br><span class="gt" data-i18n="h1b"></span></h1>
+    <p class="sub" data-i18n-html="sub"></p>
+    <div class="cta">
+      <a href="#start" class="btn bp" data-i18n="cta_free"></a>
+      <a href="#case" class="btn bg" data-i18n="cta_case"></a>
     </div>
+    <div class="meta"><span data-i18n="m1"></span><span data-i18n="m2"></span><span data-i18n="m3"></span></div>
 
-    <!-- BEFORE / AFTER -->
-    <div class="ba reveal">
-      <div class="ba-card before">
-        <div class="ba-label"><span>Without BurnRate</span><span class="mono">/ month</span></div>
-        <div class="ba-amount">$2,400<small> team spend</small></div>
-        <div class="ba-row"><span>Opus on everything</span><div class="track"><div class="fill" style="width:92%"></div></div><span class="v">$1,320</span></div>
-        <div class="ba-row"><span>Padded output</span><div class="track"><div class="fill" style="width:58%"></div></div><span class="v">$560</span></div>
-        <div class="ba-row"><span>Unused connectors</span><div class="track"><div class="fill" style="width:36%"></div></div><span class="v">$310</span></div>
-        <div class="ba-row"><span>Retry loops</span><div class="track"><div class="fill" style="width:24%"></div></div><span class="v">$210</span></div>
-        <div class="ba-warn">⚠ Allowance gone by the 17th. Nobody knows why.</div>
-      </div>
-      <div class="ba-arrow"><div>→</div></div>
-      <div class="ba-card after">
-        <div class="ba-label"><span>With BurnRate</span><span class="mono">/ month</span></div>
-        <div class="ba-amount green-text">$1,080<small style="-webkit-text-fill-color:var(--muted)"> team spend</small></div>
-        <div class="ba-row"><span>Right model per task</span><div class="track"><div class="fill" style="width:46%"></div></div><span class="v">$640</span></div>
-        <div class="ba-row"><span>Concise output</span><div class="track"><div class="fill" style="width:26%"></div></div><span class="v">$250</span></div>
-        <div class="ba-row"><span>Lean context</span><div class="track"><div class="fill" style="width:13%"></div></div><span class="v">$110</span></div>
-        <div class="ba-row"><span>Retry loops</span><div class="track"><div class="fill" style="width:9%"></div></div><span class="v">$80</span></div>
-        <div class="ba-save">✓ $1,320 saved this month, measured on your own usage.</div>
-      </div>
+    <div class="meter mono" aria-label="Live meter example">
+      <div class="h">🔥 BurnRate live meter v0.4 · watching your latest Claude session</div>
+      <div><span class="h">10:02</span>  <span class="g">ctx   42k</span> │ ~$0.02/msg │ session $0.61 │ 9 turns │ mywebsite  <span class="g">All good.</span></div>
+      <div><span class="h">10:31</span>  <span class="y">ctx  138k</span> │ ~$0.07/msg │ session $3.90 │ 41 turns │ mywebsite  <span class="y">Getting big. Consider /compact soon.</span></div>
+      <div><span class="h">10:58</span>  <span class="r">ctx  214k</span> │ ~$0.11/msg │ session $8.75 │ 77 turns │ mywebsite  <span class="r">⚠ Context is big. Type /compact</span></div>
     </div>
-    <p class="ba-note">Illustrative example of a 10-person team. Your savings depend on how your team uses AI, and BurnRate measures them on your real data.</p>
+    <p class="cap" data-i18n="meter_cap"></p>
   </div>
 </header>
 
-<!-- TOOLS STRIP -->
-<div class="strip">
+<!-- CASE STUDY -->
+<section id="case">
   <div class="wrap">
-    <p>Works with the tools your team already uses</p>
-    <div class="strip-items"><span>Claude Code</span><span>OpenAI Codex</span><span>GitHub Copilot</span><span>Cursor</span><span>Gemini CLI</span><span>Windsurf</span><span>OpenCode</span></div>
-  </div>
-</div>
-
-<!-- WHERE SAVINGS COME FROM -->
-<section id="savings">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Where the 50% comes from</span>
-      <h2>Four kinds of waste.<br>One tool that removes them.</h2>
-      <p>No magic and no compression tricks that hurt quality. Just the fixes a careful engineer would make, applied automatically to every session.</p>
+    <div class="sh">
+      <span class="eb" data-i18n="case_eb"></span>
+      <h2 data-i18n="case_h"></h2>
+      <p data-i18n="case_p"></p>
     </div>
-    <div class="levers">
-      <div class="lever reveal">
-        <div class="ico">🧭</div>
-        <div class="lever-num grad-text">01</div>
-        <div class="lever-unit">Model routing</div>
-        <h3>Right model, every task</h3>
-        <p>Renaming a variable doesn't need your most expensive model. Simple work goes to fast, cheap models and hard problems go to the strongest one. If the cheaper model starts failing, BurnRate switches back automatically.</p>
+    <div class="case">
+      <div class="kpis">
+        <div class="kpi"><b>$652</b><span data-i18n="k1"></span></div>
+        <div class="kpi"><b class="gt">81%</b><span data-i18n="k2"></span></div>
+        <div class="kpi"><b>$195</b><span data-i18n="k3"></span></div>
+        <div class="kpi"><b class="gg">~52%</b><span data-i18n="k4"></span></div>
       </div>
-      <div class="lever reveal">
-        <div class="ico">✂️</div>
-        <div class="lever-num grad-text">02</div>
-        <div class="lever-unit">Concise output</div>
-        <h3>No padded answers</h3>
-        <p>No intros, no recaps, no reprinting the whole file to change one line. You pay for the answer and not the filler. The model's reasoning stays untouched.</p>
-      </div>
-      <div class="lever reveal">
-        <div class="ico">🔌</div>
-        <div class="lever-num grad-text">03</div>
-        <div class="lever-unit">Lean context</div>
-        <h3>Connectors that earn their place</h3>
-        <p>Every installed connector is sent with every request, even if you never use it. BurnRate flags the dead weight and suggests the connectors and skills that actually fit how you work.</p>
-      </div>
-      <div class="lever reveal">
-        <div class="ico">🔁</div>
-        <div class="lever-num grad-text">04</div>
-        <div class="lever-unit">Loop detection</div>
-        <h3>Stop paying twice</h3>
-        <p>Agents that retry the same failing step burn tokens fast. BurnRate catches loops early and alerts you before a runaway session eats the team's budget.</p>
-      </div>
-    </div>
-    <div class="levers-total reveal">
-      <span class="t">Together, these four fixes are built to cut your spend by</span>
-      <span class="n green-text">50% or more</span>
-    </div>
-    <p class="fine">Target based on how much typical usage goes to these four kinds of waste. Your dashboard shows your actual savings, measured on your own data.</p>
-  </div>
-</section>
-
-<!-- CALCULATOR -->
-<section id="calculator" style="padding-top:0">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Savings calculator</span>
-      <h2>See what you could save</h2>
-      <p>Move the sliders to match your team.</p>
-    </div>
-    <div class="calc reveal">
-      <div class="calc-left">
-        <div class="field">
-          <div class="field-top"><label for="devs">Developers using AI tools</label><output id="devsOut" class="mono">10</output></div>
-          <input type="range" id="devs" min="1" max="100" value="10">
+      <div class="split">
+        <div class="box">
+          <h3 data-i18n="where_h"></h3>
+          <div class="row"><span data-i18n="t_ctx"></span><div class="tr"><div class="f" style="width:100%"></div></div><span class="v">$526</span></div>
+          <div class="row"><span data-i18n="t_cw"></span><div class="tr"><div class="f" style="width:15%"></div></div><span class="v">$77</span></div>
+          <div class="row"><span data-i18n="t_out"></span><div class="tr"><div class="f" style="width:9%"></div></div><span class="v">$49</span></div>
+          <div class="row"><span data-i18n="t_in"></span><div class="tr"><div class="f" style="width:0.5%"></div></div><span class="v">$0.03</span></div>
+          <p class="note" data-i18n="where_note"></p>
         </div>
-        <div class="field">
-          <div class="field-top"><label for="spend">Average AI spend per developer</label><output id="spendOut" class="mono">$200/mo</output></div>
-          <input type="range" id="spend" min="20" max="1000" step="10" value="200">
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <div class="field-top"><label for="opt">Savings target</label><output id="optOut" class="mono">50%</output></div>
-          <input type="range" id="opt" min="30" max="60" step="5" value="50">
-          <p style="color:var(--dim);font-size:.82rem;margin-top:10px">BurnRate is built to save 50% or more. Adjust it to see a more conservative or a more aggressive estimate.</p>
+        <div class="box">
+          <h3 data-i18n="sim_h"></h3>
+          <table class="scen">
+            <tr><td data-i18n="s100"></td><td>~$196</td></tr>
+            <tr><td data-i18n="s150"></td><td>~$256</td></tr>
+            <tr class="best"><td data-i18n="s200"></td><td>~$263</td></tr>
+          </table>
+          <p class="note" data-i18n="sim_note"></p>
         </div>
       </div>
-      <div class="calc-right">
-        <div class="calc-big-label">You could save</div>
-        <div class="calc-big green-text mono" id="yearSave">$12,000</div>
-        <div class="calc-sub">per year</div>
-        <div class="calc-split">
-          <div><small>Current monthly spend</small><b id="cur">$2,000</b></div>
-          <div><small>With BurnRate</small><b id="after" style="color:var(--green)">$1,000</b></div>
-        </div>
-        <div class="calc-roi">BurnRate Team would cost <b id="cost">$60/mo</b>, which is <b id="roi">17×</b> less than what it saves you.</div>
-        <a href="#join" class="btn btn-primary" style="justify-content:center">Claim your savings →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">How it works</span>
-      <h2>Saving from day one</h2>
-      <p>No migration, no proxy, no changes to how your team works.</p>
-    </div>
-    <div class="steps">
-      <div class="step reveal">
-        <div class="step-n">STEP 01</div>
-        <h3>Install the local agent</h3>
-        <p>One command. It reads usage metadata your AI tools already store on your machine.</p>
-        <div class="term"><span class="p">$</span> npx burnrate init<br><span class="g">✓</span> Found Claude Code, Codex, Copilot<br><span class="g">✓</span> 30 days of history imported</div>
-      </div>
-      <div class="step reveal">
-        <div class="step-n">STEP 02</div>
-        <h3>See where money leaks</h3>
-        <p>An instant breakdown of your waste: by model, by tool, by person and by project.</p>
-        <div class="term"><span class="d"># waste report</span><br>Opus on simple tasks <span class="p">$1,320</span><br>Padded output &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="p">$560</span><br>Unused connectors &nbsp;&nbsp;<span class="p">$310</span></div>
-      </div>
-      <div class="step reveal">
-        <div class="step-n">STEP 03</div>
-        <h3>Apply fixes in one click</h3>
-        <p>Turn on routing and concise profiles, and remove dead connectors. Then watch the savings report grow.</p>
-        <div class="term"><span class="p">$</span> burnrate optimize --apply<br><span class="g">✓</span> 4 optimizations enabled<br><span class="g">↓ Projected: −54% this month</span></div>
-      </div>
+      <div class="quote" data-i18n="quote"></div>
+      <p class="note" data-i18n="case_disc"></p>
     </div>
   </div>
 </section>
 
 <!-- FEATURES -->
-<section style="padding-top:0">
+<section id="features" style="padding-top:0">
   <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Everything included</span>
-      <h2>Control, not just a counter</h2>
-    </div>
-    <div class="features">
-      <div class="feature reveal"><div class="fi">📊</div><h3>One dashboard, every tool</h3><p>Combined spend across all your AI coding assistants, by person, project and model.</p></div>
-      <div class="feature reveal"><div class="fi">🔔</div><h3>Alerts before the limit</h3><p>Slack or email alerts when someone is on pace to run out. Not after it happens.</p></div>
-      <div class="feature reveal"><div class="fi">🔮</div><h3>Invoice forecasting</h3><p>Know what this month will cost, based on your team's real usage patterns.</p></div>
-      <div class="feature reveal"><div class="fi">🧠</div><h3>Skill recommendations<span class="tag">Smart</span></h3><p>Skills that match your most repeated tasks, each with a trust check. You review and install. Nothing is installed automatically.</p></div>
-      <div class="feature reveal"><div class="fi">🎯</div><h3>Budgets &amp; caps</h3><p>Soft or hard limits per person or project, so one runaway session can't drain the team.</p></div>
-      <div class="feature reveal"><div class="fi">💰</div><h3>Proof of savings<span class="tag">Monthly</span></h3><p>A report of what each optimization actually saved you, ready to forward to finance.</p></div>
+    <div class="sh"><span class="eb" data-i18n="f_eb"></span><h2 data-i18n="f_h"></h2><p data-i18n="f_p"></p></div>
+    <div class="grid3">
+      <div class="card"><div class="ic">📊</div><h3><span data-i18n="f1h"></span><span class="tag now" data-i18n="tag_now"></span></h3><p data-i18n="f1p"></p></div>
+      <div class="card"><div class="ic">🧠</div><h3><span data-i18n="f2h"></span><span class="tag now" data-i18n="tag_now"></span></h3><p data-i18n="f2p"></p></div>
+      <div class="card"><div class="ic">🚦</div><h3><span data-i18n="f3h"></span><span class="tag now" data-i18n="tag_now"></span></h3><p data-i18n="f3p"></p></div>
+      <div class="card"><div class="ic">🧭</div><h3><span data-i18n="f4h"></span><span class="tag now" data-i18n="tag_now"></span></h3><p data-i18n="f4p"></p></div>
+      <div class="card"><div class="ic">🔌</div><h3><span data-i18n="f5h"></span><span class="tag now" data-i18n="tag_now"></span></h3><p data-i18n="f5p"></p></div>
+      <div class="card"><div class="ic">👥</div><h3><span data-i18n="f6h"></span><span class="tag soon" data-i18n="tag_soon"></span></h3><p data-i18n="f6p"></p></div>
     </div>
   </div>
 </section>
 
-<!-- GUARANTEE -->
+<!-- SUPPORT -->
 <section style="padding-top:0">
   <div class="wrap">
-    <div class="guarantee reveal">
-      <div class="seal"><b>SAVINGS<br>GUARANTEE</b></div>
-      <div>
-        <h2>If it doesn't pay for itself, you don't pay.</h2>
-        <p>BurnRate measures your savings on your own usage, every month. If it saves you less than its subscription price in any month, that month is free. No forms and no arguments.</p>
-      </div>
+    <div class="sh"><span class="eb" data-i18n="sup_eb"></span><h2 data-i18n="sup_h"></h2><p data-i18n="sup_p"></p></div>
+    <table class="sup">
+      <tr><td>Claude Code</td><td data-i18n="sup_cc"></td></tr>
+      <tr><td>Claude Desktop (Code)</td><td data-i18n="sup_cd"></td></tr>
+      <tr><td>OpenAI Codex CLI</td><td data-i18n="sup_codex"></td></tr>
+      <tr><td>Cursor · Copilot · Gemini CLI</td><td data-i18n="sup_next"></td></tr>
+      <tr><td>Chat apps (Claude.ai, ChatGPT)</td><td data-i18n="sup_chat"></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- GET STARTED -->
+<section id="start" style="padding-top:0">
+  <div class="wrap">
+    <div class="sh"><span class="eb" data-i18n="st_eb"></span><h2 data-i18n="st_h"></h2><p data-i18n="st_p"></p></div>
+    <div class="grid3">
+      <div class="card"><h3 data-i18n="st1h"></h3><p data-i18n="st1p"></p>
+        <div class="cta" style="justify-content:flex-start;margin-top:14px"><a class="btn bp" href="burnrate.py" download data-i18n="dl"></a></div></div>
+      <div class="card"><h3 data-i18n="st2h"></h3><p data-i18n="st2p"></p>
+        <div class="term"><span class="p">&gt;</span> python burnrate.py --html report.html</div></div>
+      <div class="card"><h3 data-i18n="st3h"></h3><p data-i18n="st3p"></p>
+        <div class="term"><span class="p">&gt;</span> python burnrate.py --watch</div></div>
     </div>
+    <p class="note" style="text-align:center" data-i18n="st_req"></p>
   </div>
 </section>
 
 <!-- PRIVACY -->
-<section id="privacy" style="padding-top:0">
+<section style="padding-top:0">
   <div class="wrap">
-    <div class="privacy">
-      <div class="reveal">
-        <span class="eyebrow">Privacy by design</span>
-        <h2>We never see your code. Ever.</h2>
-        <p>The local agent sends numbers and nothing else. It's open source, so you can check exactly what leaves your machine.</p>
-        <div class="pv-list">
-          <div class="pv-item"><i>✓</i><span>Only token counts, costs, model names and timestamps</span></div>
-          <div class="pv-item"><i>✓</i><span>The optional smart router runs locally and never in our cloud</span></div>
-          <div class="pv-item"><i>✓</i><span>Open-source agent you can review line by line</span></div>
-          <div class="pv-item"><i>✓</i><span>Recommendations link to original sources only, never to copies</span></div>
-        </div>
-      </div>
-      <div class="packet reveal">
-        <div class="h"><span>// what BurnRate sends</span><span>payload.json</span></div>
-        {<br>
-        &nbsp;&nbsp;<span class="k">"tool"</span>: <span class="s">"claude-code"</span>,<br>
-        &nbsp;&nbsp;<span class="k">"model"</span>: <span class="s">"sonnet"</span>,<br>
-        &nbsp;&nbsp;<span class="k">"input_tokens"</span>: <span class="n">18240</span>,<br>
-        &nbsp;&nbsp;<span class="k">"output_tokens"</span>: <span class="n">912</span>,<br>
-        &nbsp;&nbsp;<span class="k">"cost_usd"</span>: <span class="n">0.068</span>,<br>
-        &nbsp;&nbsp;<span class="k">"ts"</span>: <span class="s">"2026-10-27T09:14:02Z"</span><br>
-        }<br><br>
-        <span class="h" style="display:block;margin:0">// what it never sends</span>
-        <span class="x">source code</span> · <span class="x">prompts</span> · <span class="x">responses</span> · <span class="x">file names</span>
-      </div>
+    <div class="sh"><span class="eb" data-i18n="pv_eb"></span><h2 data-i18n="pv_h"></h2><p data-i18n="pv_p"></p></div>
+    <div class="priv">
+      <div class="box"><h3 style="color:var(--g)" data-i18n="pv_yes"></h3><ul><li data-i18n="pv1"></li><li data-i18n="pv2"></li><li data-i18n="pv3"></li></ul></div>
+      <div class="box"><h3 style="color:var(--o)" data-i18n="pv_no"></h3><ul><li data-i18n="pv4"></li><li data-i18n="pv5"></li><li data-i18n="pv6"></li></ul></div>
     </div>
   </div>
 </section>
@@ -485,120 +283,182 @@
 <!-- PRICING -->
 <section id="pricing" style="padding-top:0">
   <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Pricing</span>
-      <h2>Pays for itself. Guaranteed.</h2>
-      <p>Early-access members get the Team plan free during beta, then 50% off for life.</p>
-    </div>
+    <div class="sh"><span class="eb" data-i18n="pr_eb"></span><h2 data-i18n="pr_h"></h2><p data-i18n="pr_p"></p></div>
     <div class="pricing">
-      <div class="plan reveal">
-        <h3>Free</h3>
-        <div class="for">See where your money goes</div>
-        <div class="price">$0</div>
-        <div class="roi"></div>
-        <ul><li>Local spend dashboard</li><li>All supported tools</li><li>Basic waste report</li><li>30 days of history</li><li>Open-source agent</li></ul>
-        <a href="#join" class="btn btn-ghost">Join the waitlist</a>
-      </div>
-      <div class="plan pop reveal">
-        <h3>Pro</h3>
-        <div class="for">For developers who want to save</div>
-        <div class="price">$9<small> /month</small></div>
-        <div class="roi">Covered by the guarantee</div>
-        <ul><li>Everything in Free</li><li>Smart model routing</li><li>Concise-output profiles</li><li>Connector &amp; skill advisor</li><li>Limit alerts &amp; forecasting</li><li>Monthly savings report</li></ul>
-        <a href="#join" class="btn btn-primary">Get early access</a>
-      </div>
-      <div class="plan reveal">
-        <h3>Team</h3>
-        <div class="for">For engineering teams</div>
-        <div class="price">$6<small> /member/month</small></div>
-        <div class="roi">Covered by the guarantee</div>
-        <ul><li>Everything in Pro</li><li>Shared team dashboard</li><li>Budgets per person &amp; project</li><li>Team-approved connectors &amp; skills</li><li>Slack alerts</li><li>CSV export for finance</li></ul>
-        <a href="#join" class="btn btn-ghost">Get early access</a>
-      </div>
+      <div class="plan"><h3 data-i18n="p1"></h3><div class="for" data-i18n="p1f"></div><div class="price">$0</div>
+        <ul><li data-i18n="p1a"></li><li data-i18n="p1b"></li><li data-i18n="p1c"></li><li data-i18n="p1d"></li></ul>
+        <a href="#start" class="btn bg" data-i18n="dl"></a></div>
+      <div class="plan pop"><span class="pb" data-i18n="p2b"></span><h3 data-i18n="p2"></h3><div class="for" data-i18n="p2f"></div><div class="price">$9<small> /mo</small></div>
+        <ul><li data-i18n="p2a"></li><li data-i18n="p2c"></li><li data-i18n="p2d"></li><li data-i18n="p2e"></li></ul>
+        <a href="#join" class="btn bp" data-i18n="join"></a></div>
+      <div class="plan"><h3 data-i18n="p3"></h3><div class="for" data-i18n="p3f"></div><div class="price">$6<small> /member/mo</small></div>
+        <ul><li data-i18n="p3a"></li><li data-i18n="p3b"></li><li data-i18n="p3c"></li><li data-i18n="p3d"></li></ul>
+        <a href="#join" class="btn bg" data-i18n="join"></a></div>
     </div>
+    <p class="note" style="text-align:center" data-i18n="pr_note"></p>
   </div>
 </section>
 
 <!-- FAQ -->
 <section style="padding-top:0">
   <div class="wrap">
-    <div class="section-head reveal"><span class="eyebrow">FAQ</span><h2>Questions, answered</h2></div>
+    <div class="sh"><span class="eb">FAQ</span><h2 data-i18n="faq_h"></h2></div>
     <div class="faq">
-      <details><summary>Will I really save 50%?</summary><p>That's what BurnRate is built for. The four kinds of waste it removes (oversized models, padded output, unused connectors and retry loops) typically make up a large share of AI coding spend. Your actual savings depend on how your team works, which is why BurnRate measures them on your real usage, and why the guarantee exists: if it doesn't save more than it costs in a month, that month is free.</p></details>
-      <details><summary>Won't cheaper models and shorter answers hurt quality?</summary><p>No, and that's the point of doing it carefully. Routing only sends a task to a cheaper model when it can handle it, and BurnRate tracks failure and retry rates per model, switching back automatically when quality drops. Concise profiles remove filler like intros, recaps and full-file reprints. They never limit the model's reasoning.</p></details>
-      <details><summary>Doesn't each tool already show its own usage?</summary><p>Some do, for that one tool only, and none of them will tell you a competitor would be cheaper. BurnRate combines every tool your team uses, finds the waste across all of them, and fixes it.</p></details>
-      <details><summary>How does it get the data without seeing my code?</summary><p>AI coding tools keep usage logs on your machine. Our open-source agent pulls out only the numbers (token counts, model and timestamp) and sends just those. Prompts, code and responses never leave your device.</p></details>
-      <details><summary>Is it safe to install the connectors and skills you recommend?</summary><p>Every recommendation comes with a trust check: who maintains it, how recently it was updated, how widely it's used and what permissions it asks for. We only link to original sources and never install anything for you.</p></details>
-      <details><summary>Do I need to route traffic through a proxy?</summary><p>No. Tracking, recommendations and concise profiles all work without one. The smart router is optional and runs locally on your machine.</p></details>
+      <details><summary data-i18n="q1"></summary><p data-i18n="a1"></p></details>
+      <details><summary data-i18n="q2"></summary><p data-i18n="a2"></p></details>
+      <details><summary data-i18n="q3"></summary><p data-i18n="a3"></p></details>
+      <details><summary data-i18n="q4"></summary><p data-i18n="a4"></p></details>
+      <details><summary data-i18n="q5"></summary><p data-i18n="a5"></p></details>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="final" style="padding-top:0">
+<!-- JOIN -->
+<section class="final" id="join" style="padding-top:0">
   <div class="wrap">
-    <div class="final-box reveal">
-      <h2>Stop overpaying for AI.<br><span class="grad-text">Start this month.</span></h2>
-      <p>Join the waitlist and get the Team plan free during beta.</p>
-      <a href="#join" class="btn btn-primary" style="padding:15px 30px;font-size:1.05rem">Get early access →</a>
+    <div class="fbox">
+      <h2><span data-i18n="fin_a"></span><br><span class="gt" data-i18n="fin_b"></span></h2>
+      <p style="color:var(--m);font-size:1.1rem;margin-bottom:30px" data-i18n="fin_p"></p>
+      <form class="signup" onsubmit="return joinWaitlist(event,this)">
+        <input type="email" name="email" required data-i18n-ph="ph">
+        <button class="btn bp" type="submit" data-i18n="join"></button>
+      </form>
+      <p class="thanks" id="thanks" data-i18n="thanks"></p>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="wrap">
-    <span>© BurnRate</span>
-    <span>Not affiliated with Anthropic, OpenAI, GitHub, Microsoft or Cursor. Product names are trademarks of their respective owners.</span>
-  </div>
-</footer>
+<footer><div class="wrap"><span>© BurnRate</span><span data-i18n="foot"></span></div></footer>
 
 <script>
-  // ---- Waitlist ----
-  // Waitlist signups are sent to Formspree.
-  const FORM_ENDPOINT = "https://formspree.io/f/xjyyyllg";
-  async function joinWaitlist(e, form) {
-    e.preventDefault();
-    const btn = form.querySelector("button");
-    const data = Object.fromEntries(new FormData(form));
-    btn.disabled = true; btn.textContent = "Sending…";
-    try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Accept": "application/json" },
-        body: new URLSearchParams({ ...data, page: location.href })
-      });
-      if (!res.ok) throw new Error("Request failed: " + res.status);
-      form.style.display = "none";
-      document.getElementById("thanks").style.display = "block";
-    } catch (err) {
-      console.error(err);
-      btn.disabled = false; btn.textContent = "Start saving →";
-      alert("Something went wrong. Please try again.");
-    }
-    return false;
-  }
+const T = {
+en: {
+  nav_case:"Real results", nav_features:"Features", nav_start:"Get started", nav_pricing:"Pricing", nav_cta:"Download free",
+  badge_new:"Free", badge:"Open-source CLI for Claude Code · v0.4",
+  h1a:"Stop hitting your AI limits.", h1b:"Stop paying for waste.",
+  sub:"Most AI coding tokens don't go to answers. They go to <b>re-reading huge conversations</b> on every message. BurnRate shows you where your tokens go and warns you <b>live</b> before a session gets expensive.",
+  cta_free:"Download free →", cta_case:"See a real report",
+  m1:"Runs 100% on your machine", m2:"No account needed", m3:"Works with Claude Code & Claude Desktop",
+  meter_cap:"The live meter turns red when your context gets big, so you know when to /compact or start fresh.",
+  case_eb:"Real results", case_h:"One developer. 30 days. Here's what we found.",
+  case_p:"We ran BurnRate on our founder's own Claude Code usage. The waste wasn't where we expected.",
+  k1:"usage value in 30 days (API prices)", k2:"of it was re-reading context", k3:"cost of one single long session", k4:"estimated savings with lean context",
+  where_h:"Where the money actually went", t_ctx:"Re-reading context", t_cw:"Loading context", t_out:"Answers (output)", t_in:"New input",
+  where_note:"Shorter answers would barely matter: output was only 8% of the cost. Context was 81%.",
+  sim_h:"If you started fresh when context reached…", s100:"100k tokens (1,228 resets)", s150:"150k tokens (411 resets)", s200:"200k tokens (265 resets) ← best",
+  sim_note:"Resetting too often costs more, because each fresh start reloads the base context. BurnRate finds the best point for you.",
+  quote:"“One session had 713 messages and reached almost a million tokens of context. That single session cost about $195, roughly 30% of the month, and it's why I hit my weekly limit. So I built the tool that would have warned me.”",
+  case_disc:"Data from one user on a Claude subscription. Costs are API-equivalent estimates, and savings are simulated, not yet measured. Your results will differ.",
+  f_eb:"What it does", f_h:"See it. Catch it live. Fix it.", f_p:"Everything below marked “Now” is in the free CLI today.",
+  tag_now:"Now", tag_soon:"Coming",
+  f1h:"Spend report", f1p:"Cost by model, project, session and token type, as a terminal report or a clean HTML page.",
+  f2h:"Context analysis", f2p:"Average context per message, your heaviest sessions, and how much you'd save by starting fresh at the right size.",
+  f3h:"Live meter", f3p:"A small window (or Claude Code status line) that turns yellow, then red, as your session grows, and beeps once when it's time to /compact.",
+  f4h:"Right-model check", f4p:"Finds small tasks that ran on your most expensive model and estimates what a cheaper one would have cost.",
+  f5h:"Unused connectors", f5p:"Flags configured MCP servers you never use. Their tool definitions take up context on every request.",
+  f6h:"Team dashboard", f6p:"Everyone's usage in one place, with budgets and Slack alerts. Join the waitlist to shape it.",
+  sup_eb:"Compatibility", sup_h:"What it works with today", sup_p:"We'd rather be honest than list logos.",
+  sup_cc:"✅ Full support: report, context analysis, live meter, status line", sup_cd:"✅ Report and live meter (it reads the same local logs)", sup_codex:"🧪 Experimental report", sup_next:"🔜 Planned. Tell us which one you need.", sup_chat:"❌ Not possible. They don't store usage locally.",
+  st_eb:"Get started", st_h:"Up and running in a few minutes", st_p:"Free, open source, no sign-up.",
+  st1h:"1. Download", st1p:"One Python file. Nothing else to install.", dl:"Download burnrate.py",
+  st2h:"2. See your report", st2p:"Open a terminal in the folder and run:", st3h:"3. Keep the live meter open", st3p:"It follows your latest Claude session automatically:",
+  st_req:"Requires Python 3.8 or newer. Works on Windows, macOS and Linux.",
+  pv_eb:"Privacy", pv_h:"We never see your code. Ever.", pv_p:"BurnRate runs on your machine and sends nothing anywhere. Read the source to check.",
+  pv_yes:"✓ What it reads", pv1:"Model names and token counts", pv2:"Timestamps and project folder names", pv3:"Names of tools used",
+  pv_no:"✗ What it never reads or sends", pv4:"Your code or files", pv5:"Your prompts or Claude's answers", pv6:"Anything to any server",
+  pr_eb:"Pricing", pr_h:"Free today. Pro when it's ready.", pr_p:"The CLI stays free. Paid plans add automation and teams.",
+  p1:"Free", p1f:"Everything you need to see and fix waste", p1a:"Spend & context report", p1b:"Live meter & status line", p1c:"Right-model & connector checks", p1d:"Open source",
+  p2b:"Coming soon", p2:"Pro", p2f:"For developers who want it automatic", p2a:"Auto-compact suggestions & rules", p2c:"Before/after savings tracking", p2d:"Weekly limit forecast", p2e:"Smart model routing",
+  p3:"Team", p3f:"For engineering teams", p3a:"Shared dashboard", p3b:"Budgets per person & project", p3c:"Slack & email alerts", p3d:"Export for finance",
+  join:"Join the waitlist", pr_note:"Early waitlist members get Pro free during beta, then 50% off for life.",
+  faq_h:"Questions, answered",
+  q1:"I'm on a flat Claude subscription. Why would I care about cost?", a1:"Because your weekly limit is measured in usage. The same waste that would cost API users money makes subscribers hit their limit early. Leaner sessions make your limit last much longer.",
+  q2:"Will starting fresh hurt Claude's quality?", a2:"Usually it helps. Huge contexts slow the model down and dilute its focus. /compact keeps a summary of what matters. Start fresh for unrelated tasks, compact inside long ones.",
+  q3:"Does it work with Cursor or Copilot?", a3:"Not yet. Today it fully supports Claude Code, including sessions started from Claude Desktop. Tell us what you use when you join the waitlist. That decides what we build next.",
+  q4:"Are the savings guaranteed?", a4:"No. The numbers are estimates based on your real usage. Measure your own before and after: run the report, change your habits for a week, and run it again.",
+  q5:"Is it really free?", a5:"Yes. The CLI is free and open source. Paid plans will add automation and team features on top. The free tool won't get worse.",
+  fin_a:"Your next weekly limit", fin_b:"can last a lot longer.", fin_p:"Get updates and early access to Pro and Team.",
+  ph:"you@company.com", thanks:"🎉 You're on the list. Check your inbox soon.",
+  foot:"Not affiliated with Anthropic, OpenAI, GitHub, Microsoft or Cursor."
+},
+ar: {
+  nav_case:"نتائج حقيقية", nav_features:"المميزات", nav_start:"ابدأ الآن", nav_pricing:"الأسعار", nav_cta:"حمّل مجاناً",
+  badge_new:"مجاني", badge:"أداة مفتوحة المصدر لـ Claude Code · الإصدار 0.4",
+  h1a:"توقف عن استنفاد حدود الذكاء الاصطناعي.", h1b:"وتوقف عن الدفع مقابل الهدر.",
+  sub:"معظم استهلاك أدوات البرمجة بالذكاء الاصطناعي لا يذهب إلى الإجابات، بل إلى <b>إعادة قراءة محادثات ضخمة</b> مع كل رسالة. يوضح لك BurnRate أين يذهب استهلاكك، وينبهك <b>لحظياً</b> قبل أن تصبح الجلسة مكلفة.",
+  cta_free:"حمّل مجاناً ←", cta_case:"شاهد تقريراً حقيقياً",
+  m1:"يعمل بالكامل على جهازك", m2:"بدون حساب", m3:"يعمل مع Claude Code وClaude Desktop",
+  meter_cap:"يتحول العداد اللحظي إلى الأحمر عندما يكبر السياق، لتعرف متى تضغط المحادثة أو تبدأ من جديد.",
+  case_eb:"نتائج حقيقية", case_h:"مطوّر واحد. ٣٠ يوماً. وهذا ما اكتشفناه.",
+  case_p:"شغّلنا BurnRate على استخدام مؤسس المشروع نفسه، ولم يكن الهدر حيث توقعنا.",
+  k1:"قيمة الاستخدام خلال ٣٠ يوماً بأسعار الاستخدام المباشر", k2:"منها ذهب لإعادة قراءة السياق", k3:"تكلفة جلسة واحدة طويلة", k4:"التوفير المتوقع مع سياق أصغر",
+  where_h:"أين ذهبت التكلفة فعلاً", t_ctx:"إعادة قراءة السياق", t_cw:"تحميل السياق", t_out:"الإجابات", t_in:"المدخلات الجديدة",
+  where_note:"تقصير الإجابات لن يصنع فرقاً يُذكر، فالإجابات كانت ٨٪ فقط من التكلفة، بينما السياق كان ٨١٪.",
+  sim_h:"لو بدأت من جديد عندما وصل السياق إلى…", s100:"١٠٠ ألف (١٢٢٨ مرة)", s150:"١٥٠ ألف (٤١١ مرة)", s200:"٢٠٠ ألف (٢٦٥ مرة) ← الأفضل",
+  sim_note:"البدء من جديد بكثرة يكلّف أكثر، لأن كل بداية جديدة تعيد تحميل السياق الأساسي. وBurnRate يحدد لك النقطة الأفضل.",
+  quote:"«جلسة واحدة كان فيها ٧١٣ رسالة، ووصل السياق فيها إلى قرابة مليون. كلّفت هذه الجلسة وحدها حوالي ١٩٥ دولاراً، أي قرابة ٣٠٪ من الشهر، وهي السبب في وصولي إلى الحد الأسبوعي. فبنيت الأداة التي كانت ستنبهني.»",
+  case_disc:"البيانات من مستخدم واحد مشترك في كلود. التكاليف تقديرية بأسعار الاستخدام المباشر، والتوفير محاكاة وليس قياساً فعلياً حتى الآن. نتائجك ستختلف.",
+  f_eb:"ماذا تفعل الأداة", f_h:"اكتشف الهدر، والتقطه لحظياً، ثم أصلحه.", f_p:"كل ما عليه علامة «متاح الآن» موجود في الأداة المجانية اليوم.",
+  tag_now:"متاح الآن", tag_soon:"قريباً",
+  f1h:"تقرير الاستهلاك", f1p:"التكلفة حسب الموديل والمشروع والجلسة ونوع الاستهلاك، في الطرفية أو في صفحة منظمة.",
+  f2h:"تحليل السياق", f2p:"متوسط السياق في كل رسالة، وأثقل جلساتك، وكم ستوفر لو بدأت من جديد عند الحجم المناسب.",
+  f3h:"العدّاد اللحظي", f3p:"نافذة صغيرة، أو شريط حالة في الطرفية، تتحول للأصفر ثم الأحمر كلما كبرت الجلسة، وتنبهك بصوت عندما يحين وقت الضغط.",
+  f4h:"فحص الموديل المناسب", f4p:"يجد المهام الصغيرة التي اشتغلت على أغلى موديل، ويقدّر تكلفتها على موديل أرخص.",
+  f5h:"أدوات الربط غير المستخدمة", f5p:"ينبهك إلى أدوات الربط المثبتة التي لا تستخدمها، لأنها تشغل جزءاً من السياق مع كل طلب.",
+  f6h:"لوحة الفريق", f6p:"استهلاك الفريق كله في مكان واحد، مع ميزانيات وتنبيهات. سجّل في قائمة الانتظار لتشارك في تشكيلها.",
+  sup_eb:"التوافق", sup_h:"ما تعمل معه الأداة اليوم", sup_p:"نفضّل الصدق على عرض شعارات كثيرة.",
+  sup_cc:"✅ دعم كامل: التقرير، وتحليل السياق، والعداد اللحظي، وشريط الحالة", sup_cd:"✅ التقرير والعداد اللحظي، لأنه يقرأ نفس السجلات المحلية", sup_codex:"🧪 تقرير تجريبي", sup_next:"🔜 مخطط له. أخبرنا ماذا تحتاج.", sup_chat:"❌ غير ممكن، لأنها لا تحفظ الاستهلاك على جهازك.",
+  st_eb:"ابدأ الآن", st_h:"جاهز للعمل في دقائق", st_p:"مجاني، ومفتوح المصدر، وبدون تسجيل.",
+  st1h:"١. التحميل", st1p:"ملف بايثون واحد، ولا حاجة لتثبيت أي شيء آخر.", dl:"حمّل الأداة",
+  st2h:"٢. شاهد تقريرك", st2p:"افتح الطرفية في نفس المجلد، وشغّل الأمر:", st3h:"٣. اترك العداد مفتوحاً", st3p:"يتابع آخر جلسة لك تلقائياً:",
+  st_req:"يتطلب بايثون ٣٫٨ أو أحدث، ويعمل على ويندوز وماك ولينكس.",
+  pv_eb:"الخصوصية", pv_h:"لا نرى الكود الخاص بك. أبداً.", pv_p:"تعمل الأداة على جهازك ولا ترسل أي شيء لأي مكان. اقرأ الكود المصدري لتتأكد.",
+  pv_yes:"✓ ما تقرؤه الأداة", pv1:"أسماء الموديلات وأعداد الاستهلاك", pv2:"التواريخ وأسماء مجلدات المشاريع", pv3:"أسماء الأدوات المستخدمة",
+  pv_no:"✗ ما لا تقرؤه ولا ترسله أبداً", pv4:"الكود أو الملفات", pv5:"رسائلك أو إجابات كلود", pv6:"أي شيء لأي خادم",
+  pr_eb:"الأسعار", pr_h:"مجاني اليوم، والنسخة الاحترافية قريباً.", pr_p:"الأداة الأساسية ستبقى مجانية، والباقات المدفوعة تضيف الأتمتة ومميزات الفرق.",
+  p1:"مجانية", p1f:"كل ما تحتاجه لاكتشاف الهدر وإصلاحه", p1a:"تقرير الاستهلاك والسياق", p1b:"العداد اللحظي وشريط الحالة", p1c:"فحص الموديل وأدوات الربط", p1d:"مفتوحة المصدر",
+  p2b:"قريباً", p2:"احترافية", p2f:"للمطورين الذين يريدونها تلقائية", p2a:"اقتراحات وقواعد ضغط تلقائية", p2c:"قياس التوفير قبل وبعد", p2d:"توقع موعد الوصول للحد الأسبوعي", p2e:"اختيار ذكي للموديل",
+  p3:"فريق", p3f:"لفرق البرمجة", p3a:"لوحة مشتركة", p3b:"ميزانيات لكل شخص ومشروع", p3c:"تنبيهات على البريد وتطبيقات المحادثة", p3d:"تصدير للإدارة المالية",
+  join:"انضم لقائمة الانتظار", pr_note:"أوائل المسجلين يحصلون على النسخة الاحترافية مجاناً خلال الفترة التجريبية، ثم خصم ٥٠٪ مدى الحياة.",
+  faq_h:"أسئلة شائعة",
+  q1:"أنا مشترك باشتراك ثابت في كلود، لماذا أهتم بالتكلفة؟", a1:"لأن حدك الأسبوعي يُحسب بالاستهلاك. نفس الهدر الذي يكلّف مستخدمي الدفع المباشر أموالاً، يجعل المشتركين يصلون إلى الحد مبكراً. والجلسات الأصغر تجعل حدك يكفي لمدة أطول بكثير.",
+  q2:"هل البدء من جديد يقلل جودة إجابات كلود؟", a2:"غالباً يحسّنها، فالسياق الضخم يبطئ الموديل ويشتت تركيزه. أمر الضغط يحتفظ بملخص لما يهم. ابدأ من جديد للمهام غير المرتبطة، واضغط المحادثة داخل المهام الطويلة.",
+  q3:"هل تعمل مع أدوات البرمجة الأخرى؟", a3:"ليس بعد. اليوم تدعم الأداة Claude Code بالكامل، بما في ذلك الجلسات التي تبدأها من تطبيق Claude Desktop. أخبرنا ماذا تستخدم عند التسجيل، فهذا ما سيحدد ما نبنيه بعد ذلك.",
+  q4:"هل التوفير مضمون؟", a4:"لا. الأرقام تقديرية مبنية على استخدامك الحقيقي. قِس بنفسك: شغّل التقرير، وغيّر طريقة عملك لمدة أسبوع، ثم شغّله مرة أخرى وقارن.",
+  q5:"هل هي مجانية فعلاً؟", a5:"نعم. الأداة مجانية ومفتوحة المصدر، والباقات المدفوعة ستضيف الأتمتة ومميزات الفرق. والأداة المجانية لن تسوء.",
+  fin_a:"حدّك الأسبوعي القادم", fin_b:"يمكن أن يكفيك لمدة أطول بكثير.", fin_p:"احصل على التحديثات ووصول مبكر للباقات الاحترافية وباقات الفرق.",
+  ph:"بريدك الإلكتروني", thanks:"🎉 تم تسجيلك. تابع بريدك قريباً.",
+  foot:"المشروع غير تابع لأي من الشركات المذكورة أسماء منتجاتها."
+}};
 
-  // ---- Calculator ----
-  const $ = id => document.getElementById(id);
-  const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
-  function calc() {
-    const devs = +$("devs").value, spend = +$("spend").value, opt = +$("opt").value / 100;
-    const cur = devs * spend, saved = cur * opt, after = cur - saved, cost = devs * 6;
-    $("devsOut").textContent = devs;
-    $("spendOut").textContent = "$" + spend + "/mo";
-    $("optOut").textContent = Math.round(opt * 100) + "%";
-    $("yearSave").textContent = fmt(saved * 12);
-    $("cur").textContent = fmt(cur);
-    $("after").textContent = fmt(after);
-    $("cost").textContent = fmt(cost) + "/mo";
-    $("roi").textContent = Math.max(1, Math.round(saved / cost)) + "×";
-  }
-  ["devs", "spend", "opt"].forEach(id => $(id).addEventListener("input", calc));
-  calc();
+function setLang(l){
+  const d=T[l]||T.en;
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==="ar")?"rtl":"ltr";
+  document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(d[k]!==undefined)e.textContent=d[k];});
+  document.querySelectorAll("[data-i18n-html]").forEach(e=>{const k=e.dataset.i18nHtml;if(d[k]!==undefined)e.innerHTML=d[k];});
+  document.querySelectorAll("[data-i18n-ph]").forEach(e=>{const k=e.dataset.i18nPh;if(d[k]!==undefined)e.placeholder=d[k];});
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.lang===l));
+  try{localStorage.setItem("lang",l);}catch(e){}
+}
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
+let start="en";
+try{start=localStorage.getItem("lang")||((navigator.language||"").startsWith("ar")?"ar":"en");}catch(e){}
+const q=new URLSearchParams(location.search).get("lang"); if(q&&T[q])start=q;
+setLang(start);
 
-  // ---- Reveal on scroll ----
-  const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 });
-  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+const FORM_ENDPOINT="https://formspree.io/f/xjyyyllg";
+async function joinWaitlist(e,form){
+  e.preventDefault();
+  const btn=form.querySelector("button"),old=btn.textContent;
+  btn.disabled=true;btn.textContent="…";
+  try{
+    const res=await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Accept":"application/json"},body:new URLSearchParams({...Object.fromEntries(new FormData(form)),page:location.href,lang:document.documentElement.lang})});
+    if(!res.ok)throw new Error(res.status);
+    form.style.display="none";document.getElementById("thanks").style.display="block";
+  }catch(err){btn.disabled=false;btn.textContent=old;alert(document.documentElement.lang==="ar"?"حدث خطأ، حاول مرة أخرى.":"Something went wrong. Please try again.");}
+  return false;
+}
 </script>
 </body>
 </html>
